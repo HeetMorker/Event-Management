@@ -6,7 +6,6 @@ const Event = require('../models/Event');
 
 const router = express.Router();
 
-// Route to create a new event (protected and with image upload)
 router.post('/create', authMiddleware, upload.single('image'), createEvent);
 
 router.get('/', async (req, res) => {
@@ -20,4 +19,66 @@ router.get('/', async (req, res) => {
     }
   });
   
+  router.get('/user-events', authMiddleware, async (req, res) => {
+    try {
+      const userId = req.user.userId; // Extract user ID from the JWT token
+      const events = await Event.find({ createdBy: userId }); // Find events created by this user
+      res.status(200).json(events);
+    } catch (err) {
+      console.error('Error fetching user events:', err.message);
+      res.status(500).json({ error: 'Failed to fetch user events' });
+    }
+  });
+
+router.get('/:id', authMiddleware, async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+    res.status(200).json(event);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    // If a new image is uploaded, use it, otherwise keep the old one
+    const updatedEvent = {
+      title: req.body.title,
+      description: req.body.description,
+      date: req.body.date,
+      location: req.body.location,
+      maxAttendees: req.body.maxAttendees,
+      eventType: req.body.eventType,
+      image: req.file ? req.file.path : event.image // Use the new image or keep the old one
+    };
+
+    const updated = await Event.findByIdAndUpdate(req.params.id, updatedEvent, { new: true });
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update event' });
+  }
+});
+
+router.delete('/:id', authMiddleware, async (req, res) => {
+  try {
+    const event = await Event.findByIdAndDelete(req.params.id);
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    res.status(200).json({ msg: 'Event deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete event' });
+  }
+});
+
+
 module.exports = router;

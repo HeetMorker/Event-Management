@@ -52,6 +52,12 @@ const Header = () => {
                   <li className="nav-item dashboard-menu">
                     <Link className="nav-link" to="/" target="_blank">Dashboard</Link>
                   </li>
+                  <li className="nav-item dashboard-menu">
+                    <Link className="nav-link" to="/create-event" target="_blank">Add Events</Link>
+                  </li>
+                  <li className="nav-item dashboard-menu">
+                    <Link className="nav-link" to="/my-event" target="_blank">My Events</Link>
+                  </li>
                 </ul>
               </div>
             </nav>

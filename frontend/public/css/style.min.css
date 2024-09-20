@@ -5766,7 +5766,7 @@ iframe {
   transition: all 0.3s ease-in-out 0s;
 }
 .listing-card-one .img-gallery .tag {
-  width: 90px;
+  width: 100px;
   line-height: 27px;
   font-size: 12px;
   text-transform: uppercase;
@@ -10343,6 +10343,9 @@ iframe {
 }
 .dashboard-body .property-list-table td .p-img {
   width: 105px;
+  object-fit: cover;
+  overflow: hidden;
+  height: 105px;
   border-radius: 15px;
 }
 .dashboard-body .property-list-table td .address {
@@ -13973,4 +13976,8 @@ html.with-fancybox body.hide-scrollbar {
 .my-form{max-width: 720px !important ;}
 .fa-regular{
   font-family: "Font Awesome 6 Pro" !important;
+}
+.mytable{
+  width: 400px;
+font-size: 12px !important;
 }

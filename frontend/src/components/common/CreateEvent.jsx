@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const CreateEvent = () => {
   const [formData, setFormData] = useState({
@@ -10,10 +10,44 @@ const CreateEvent = () => {
     location: '',
     maxAttendees: '',
     eventType: '',
-    image: null
+    image: null // This will store the file for new uploads
   });
-
+  const [existingImage, setExistingImage] = useState(null); // Store the existing image URL
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { eventId } = useParams(); // Get the eventId from the URL (for editing)
   const navigate = useNavigate();
+
+  // Fetch event details for editing if eventId exists
+  useEffect(() => {
+    if (eventId) {
+      const fetchEvent = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          const res = await axios.get(`http://localhost:5000/api/events/${eventId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const event = res.data;
+          setFormData({
+            title: event.title,
+            description: event.description,
+            date: new Date(event.date).toISOString().split('T')[0],
+            location: event.location,
+            maxAttendees: event.maxAttendees,
+            eventType: event.eventType,
+            image: null // No image upload by default
+          });
+          setExistingImage(event.image); // Store existing image URL
+        } catch (err) {
+          setError('Failed to load event data');
+        }
+      };
+
+      fetchEvent();
+    }
+  }, [eventId]);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -23,38 +57,51 @@ const CreateEvent = () => {
     });
   };
 
-  // Handle form submission
+  // Handle form submission for create or update event
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token'); // Get JWT token from localStorage
-
+    const token = localStorage.getItem('token');
     const form = new FormData();
-    for (let key in formData) {
-      form.append(key, formData[key]);
-    }
-
-    try {
-      const res = await axios.post('http://localhost:5000/api/events/create', form, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}` // Make sure 'Bearer ' is added before the token
+    Object.keys(formData).forEach(key => {
+        if (formData[key] !== null) {
+            form.append(key, formData[key]);
         }
-      });
-      console.log('Event created:', res.data);
-      navigate('/'); // Redirect to the home page after successful creation
-    } catch (error) {
-      console.error('Error creating event:', error.response.data);
+    });
+
+    setLoading(true);
+    try {
+        if (eventId) {
+            await axios.put(`http://localhost:5000/api/events/${eventId}`, form, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            navigate('/my-events'); // Redirect to My Events after successful update
+        } else {
+            await axios.post('http://localhost:5000/api/events/create', form, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            navigate('/'); // Redirect to My Events after successful creation
+        }
+    } catch (err) {
+        setError('Failed to save event');
+    } finally {
+        setLoading(false);
     }
-  };
+};
   return (
     <>
       <div className="main-page-wrapper">
 
-        <div id="preloader">
+        {/* <div id="preloader">
           <div id="ctn-preloader" className="ctn-preloader">
             <div className="icon"><img src="../images/loader.gif" alt className="m-auto d-block" width={64} /></div>
           </div>
-        </div>
+        </div> */}
 
         <aside className="dash-aside-navbar">
           <div className="position-relative">
@@ -69,11 +116,11 @@ const CreateEvent = () => {
                 <li><div className="nav-title">Listing</div></li>
                 <li className="plr"><a href="properties-list.html" className="d-flex w-100 align-items-center">
                   <img src="images/icon/icon_6.svg" alt />
-                  <span>My Properties</span>
+                  <span>My Events</span>
                 </a></li>
                 <li className="plr"><a href="add-property.html" className="d-flex w-100 align-items-center active">
                   <img src="images/icon/icon_7_active.svg" alt />
-                  <span>Add New Property</span>
+                  <span>Add New Events</span>
                 </a></li>
                 <li className="plr"><a href="favourites.html" className="d-flex w-100 align-items-center">
                   <img src="images/icon/icon_8.svg" alt />
@@ -97,7 +144,8 @@ const CreateEvent = () => {
             {/* ************************ Header **************************** */}
             <header className="dashboard-header">
               <div className="d-flex align-items-center justify-content-end">
-                <h4 className="m0 d-none d-lg-block">Add New Property</h4>
+                <h4 className="m0 d-none d-lg-block">{eventId ? 'Edit Event' : 'Add New Event'}</h4>
+                {error && <p>{error}</p>}
                 <button className="dash-mobile-nav-toggler d-block d-md-none me-auto">
                   <span />
                 </button>
@@ -184,9 +232,13 @@ const CreateEvent = () => {
                       <label >Event Type*</label>
                       <select className="nice-select" name="eventType" value={formData.eventType} onChange={handleChange} required>
                         <option value="">Select Event Type</option>
+                        <option value="conference">Networking events</option>
+                        <option value="conference">Charity events</option>
+                        <option value="conference">Social events</option>
                         <option value="conference">Conference</option>
                         <option value="workshop">Workshop</option>
                         <option value="meetup">Meetup</option>
+                        <option value="meetup">Seminars</option>
                       </select>
                     </div>
                   </div>
@@ -210,16 +262,22 @@ const CreateEvent = () => {
                   </div>
                   <div className="col-md-6">
                     <div className="dash-input-wrapper mb-30">
+                      {existingImage && (
+                        <div>
+                          <p>Current Image:</p>
+                          <img src={`http://localhost:5000/${existingImage}`}  alt="Current Event" style={{ width: '200px' }} />
+                        </div>
+                      )}
                       <label htmlFor>Upload Event Image*</label>
                       <div className="dash-btn-one d-inline-block position-relative me-3">
                         <i className="bi bi-plus" />Upload File
-                        <input type="file" name="image" onChange={handleChange} required />
+                        <input type="file" name="image" onChange={handleChange} required  accept="image/*" />
                       </div>
                     </div>
                   </div>
                   <div className="col-md-6 d-flex h-100 mb-auto mt-auto align-items-top">
                     <div className="button-group  d-inline-flex align-items-center mb-auto">
-                      <button type='submit' className="dash-btn-two tran3s me-3">Submit Property</button>
+                      <button type='submit' className="dash-btn-two tran3s me-3" disabled={loading}>  {loading ? 'Saving...' : eventId ? 'Update Event' : 'Create Event'}</button>
                     </div>
                   </div>
                 </div>

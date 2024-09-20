@@ -11,7 +11,7 @@ const Index = () => {
     const fetchEvents = async () => {
       try {
         const res = await axios.get('http://localhost:5000/api/events');
-        setEvents(res.data);  // Set the fetched event data
+        setEvents(res.data);
         setLoading(false);
       } catch (err) {
         setError('Failed to load events');
@@ -36,52 +36,46 @@ const Index = () => {
                   <div className="col-xl-3 col-lg-4">
                     <div className="input-box-one border-left">
                       <div className="label">I’m looking to...</div>
-                      <select className="nice-select" style={{ display: 'none' }}>
-                        <option value={1}>Buy Apartments</option>
-                        <option value={2}>Rent Condos</option>
-                        <option value={3}>Sell Houses</option>
-                        <option value={4}>Rent Industrial</option>
-                        <option value={6}>Sell Villas</option>
-                      </select><div className="nice-select" tabIndex={0}><span className="current">Buy Apartments</span><ul className="list"><li data-value={1} className="option selected">Buy Apartments</li><li data-value={2} className="option">Rent Condos</li><li data-value={3} className="option">Sell Houses</li><li data-value={4} className="option">Rent Industrial</li><li data-value={6} className="option">Sell Villas</li></ul></div>
+                      <select className="nice-select border-0"  >
+                      <option value="">Select Event Type</option>
+                      <option value="conference">Networking events</option>
+                        <option value="conference">Charity events</option>
+                        <option value="conference">Social events</option>
+                        <option value="conference">Conference</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="meetup">Meetup</option>
+                        <option value="meetup">Seminars</option>
+                      </select>
                     </div>
                     {/* /.input-box-one */}
                   </div>
                   <div className="col-xl-3 col-lg-4">
                     <div className="input-box-one border-left">
                       <div className="label">Location</div>
-                      <select className="nice-select location" style={{ display: 'none' }}>
-                        <option value={1}>Dhanmondi, Dhaka</option>
-                        <option value={2}>Acapulco, Mexico</option>
-                        <option value={3}>Berlin, Germany</option>
-                        <option value={4}>Cannes, France</option>
-                        <option value={5}>Delhi, India</option>
-                        <option value={6}>Giza, Egypt </option>
-                        <option value={7}>Havana, Cuba</option>
-                      </select><div className="nice-select location" tabIndex={0}><span className="current">Dhanmondi, Dhaka</span><ul className="list"><li data-value={1} className="option selected">Dhanmondi, Dhaka</li><li data-value={2} className="option">Acapulco, Mexico</li><li data-value={3} className="option">Berlin, Germany</li><li data-value={4} className="option">Cannes, France</li><li data-value={5} className="option">Delhi, India</li><li data-value={6} className="option">Giza, Egypt </li><li data-value={7} className="option">Havana, Cuba</li></ul></div>
+                      <select className="nice-select location border-0" >
+                        <option >Select Location</option>
+                        <option >Gujrat, Ahemdabad</option>
+                        <option >Delhi</option>
+                        <option >New Mumbai</option>
+                        <option >Karnataka</option>
+                        <option >Pune</option>
+                        <option >Patna </option>
+                        <option >Gandhinagar</option>
+                      </select>
                     </div>
-                    {/* /.input-box-one */}
                   </div>
                   <div className="col-xl-3 col-lg-4">
-                    <div className="input-box-one border-left border-lg-0">
-                      <div className="label">Price Range</div>
-                      <select className="nice-select" style={{ display: 'none' }}>
-                        <option value={1}>$10,000 - $200,000</option>
-                        <option value={2}>$200,000 - $300,000</option>
-                        <option value={2}>$300,000 - $400,000</option>
-                      </select><div className="nice-select" tabIndex={0}><span className="current">$10,000 - $200,000</span><ul className="list"><li data-value={1} className="option selected">$10,000 - $200,000</li><li data-value={2} className="option">$200,000 - $300,000</li><li data-value={2} className="option">$300,000 - $400,000</li></ul></div>
+                    <div className="input-box-one  border-left border-lg-0">
+                      <div className="label">On Date</div>
+                      <input type="date" className='border-0 text-center' />
                     </div>
-                    {/* /.input-box-one */}
                   </div>
                   <div className="col-xl-3">
                     <div className="input-box-one lg-mt-20">
                       <div className="d-flex align-items-center">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#advanceFilterModal" className="search-modal-btn sm tran3s text-uppercase fw-500 d-inline-flex align-items-center me-3">
-                          <i className="fa-light fa-sliders-up" />
-                        </a>
                         <button className="fw-500 text-uppercase tran3s search-btn">Search</button>
                       </div>
                     </div>
-                    {/* /.input-box-one */}
                   </div>
                 </div>
               </form>
@@ -139,15 +133,14 @@ const Index = () => {
             ))}
           </div>
           <div className="pt-50 md-pt-20 text-center">
-            <ul className="pagination-two d-inline-flex align-items-center justify-content-center style-none">
-              <li><a href="#"><i className="fa-regular fa-chevron-left" /></a></li>
-              <li className="active"><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><span>...</span></li>
-              <li><a href="#">13</a></li>
-              <li><a href="#"><i className="fa-regular fa-chevron-right" /></a></li>
-            </ul>
+          <ul class="pagination-one d-flex align-items-center justify-content-center style-none pt-40">
+                    <li className='active'><a href="#" >1</a></li>
+                    <li class=""><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li>....</li>
+                    <li class="ms-2"><a href="#" class="d-flex align-items-center">Last <img src="../images/icon/icon_46.svg" alt="" class="ms-2"/></a></li>
+                </ul>
           </div>
         </div>
       </div>

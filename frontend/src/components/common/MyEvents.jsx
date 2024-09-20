@@ -1,14 +1,64 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const MyEvents = () => {
+    const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    
+
+    // Fetch user-specific events
+    useEffect(() => {
+        const fetchUserEvents = async () => {
+            try {
+                const token = localStorage.getItem('token'); // Get JWT token from localStorage
+                const res = await axios.get('http://localhost:5000/api/events/user-events', {
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Pass the token to authenticate
+                    }
+                });
+                setEvents(res.data); // Set the fetched events for the user
+                setLoading(false);
+            } catch (err) {
+                setError('Failed to fetch user events');
+                setLoading(false);
+            }
+        };
+
+        fetchUserEvents();
+    }, []);
+    const handleDelete = async (eventId) => {
+        if (window.confirm('Are you sure you want to delete this event?')) {
+            try {
+                const token = localStorage.getItem('token');
+                await axios.delete(`http://localhost:5000/api/events/${eventId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setEvents(events.filter(event => event._id !== eventId)); // Remove deleted event from the list
+                navigate('/my-event'); // Redirect to My Events page
+            } catch (err) {
+                console.error('Failed to delete event:', err);
+            }
+        }
+    };
+
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
     return (
         <>
             <div className="main-page-wrapper">
-                <div id="preloader">
+                {/* <div id="preloader">
                     <div id="ctn-preloader" className="ctn-preloader">
                         <div className="icon"><img src="../images/loader.gif" alt className="m-auto d-block" width={64} /></div>
                     </div>
-                </div>
+                </div> */}
                 <aside className="dash-aside-navbar">
                     <div className="position-relative">
                         <div className="logo d-md-block d-flex align-items-center justify-content-between plr bottom-line pb-30">
@@ -146,33 +196,39 @@ const MyEvents = () => {
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="border-0">
-                                        <tr>
-                                            <td>
-                                                <div className="d-lg-flex align-items-center position-relative">
-                                                    <img src="images/img_01.jpg" alt className="p-img" />
-                                                    <div className="ps-lg-4 md-pt-10">
-                                                        <a href="#" className="property-name tran3s color-dark fw-500 fs-20 stretched-link">event title</a>
-                                                        <div className="address">event location</div>
-                                                        <h6>date</h6>
+                                    <tbody className="border-0 ">
+                                        {events.map((event, index) => (
+                                            <tr key={index}>
+                                                <td className='w-25'>
+                                                    <div className="d-lg-flex align-items-center position-relative">
+                                                        <img src={`http://localhost:5000/${event.image}`} alt="event" className="p-img" />
+                                                        <div className="ps-lg-4 md-pt-10">
+                                                            <a href="#" className="property-name tran3s color-dark fw-500 fs-20 stretched-link">{event.title}</a>
+                                                            <div className="address">{event.location}</div>
+                                                            <h6>{new Date(event.date).toLocaleDateString()}</h6>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td>description</td>
-                                            <td>seats</td>
-                                            <td> <strong className="price color-dark">event type</strong></td>
-                                            <td>
-                                                <div className="action-dots float-end">
-                                                    <button className="action-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <span />
-                                                    </button>
-                                                    <ul className="dropdown-menu dropdown-menu-end">
-                                                        <li><a className="dropdown-item" href="#"><img src="images/icon/icon_20.svg" data-src="images/icon/icon_20.svg" alt className="lazy-img" />Edit</a></li>
-                                                        <li><a className="dropdown-item" href="#"><img src="images/icon/icon_21.svg" data-src="images/icon/icon_21.svg" alt className="lazy-img" /> Delete</a></li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                                <td className=' mytable'>{event.description}</td>
+                                                <td>{event.maxAttendees}</td>
+                                                <td><strong className="price color-dark">{event.eventType}</strong></td>
+                                                <td>
+                                                    <div className="action-dots float-end">
+                                                        <button className="action-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <span />
+                                                        </button>
+                                                        <ul className="dropdown-menu dropdown-menu-end">
+                                                            <li>
+                                                                <Link className="dropdown-item" to={`/edit-event/${event._id}`}>
+                                                                    <img src="images/icon/icon_20.svg" alt="edit" />Edit
+                                                                </Link>
+                                                            </li>
+                                                            <li><a className="dropdown-item" onClick={() => handleDelete(event._id)}><img src="images/icon/icon_21.svg" alt="delete" />Delete</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                                 {/* /.table property-list-table */}

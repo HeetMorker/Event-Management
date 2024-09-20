@@ -19,6 +19,7 @@ const router = createBrowserRouter(
       </Route>
       <Route path="/create-event" element={<ProtectedRoute><CreateEvent /></ProtectedRoute>} />
       <Route path="/my-event" element={<ProtectedRoute><MyEvents /></ProtectedRoute>} />
+      <Route path="/edit-event/:eventId" element={<ProtectedRoute><CreateEvent /></ProtectedRoute>} />
     </>
   )
 );
