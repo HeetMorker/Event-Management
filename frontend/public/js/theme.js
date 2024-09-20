@@ -1,10 +1,3 @@
-// js Document
-
-// Created on   : 01/01/2024.
-// Theme Name   : Homy-Real Estate HTML5 Template & Dashboard
-// Version      : 1.0.
-// Developed by : (me@heloshape.com) / (www.me.heloshape.com)
-
 
 (function($) {
     "use strict";

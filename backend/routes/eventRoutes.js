@@ -81,4 +81,36 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 });
 
 
+
+router.post('/:id/rsvp', authMiddleware, async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    const userId = req.user.userId; // Assuming the user ID is available from the JWT
+
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    // Check if the user has already RSVP'd
+    if (event.rsvpList.includes(userId)) {
+      return res.status(400).json({ message: 'You have already RSVP\'d to this event' });
+    }
+
+    // Check if max attendees limit is reached
+    if (event.rsvpList.length >= event.maxAttendees) {
+      return res.status(400).json({ message: 'Event has reached maximum number of attendees' });
+    }
+
+    // Add user to the RSVP list
+    event.rsvpList.push(userId);
+    await event.save();
+
+    res.status(200).json({ message: 'You have successfully RSVP\'d to the event' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to RSVP to the event' });
+  }
+});
+
 module.exports = router;

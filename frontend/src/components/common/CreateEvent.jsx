@@ -106,7 +106,7 @@ const CreateEvent = () => {
         <aside className="dash-aside-navbar">
           <div className="position-relative">
             <div className="logo d-md-block d-flex align-items-center justify-content-between plr bottom-line pb-30">
-              <a href="dashboard-index.html">
+              <a href="/">
                 <img src="images/logo/logo_01.svg" alt />
               </a>
               <button className="close-btn d-block d-md-none"><i className="fa-light fa-circle-xmark" /></button>
@@ -114,11 +114,11 @@ const CreateEvent = () => {
             <nav className="dasboard-main-nav pt-30 pb-30 bottom-line">
               <ul className="style-none">
                 <li><div className="nav-title">Listing</div></li>
-                <li className="plr"><a href="properties-list.html" className="d-flex w-100 align-items-center">
+                <li className="plr"><a href="/my-event" className="d-flex w-100 align-items-center">
                   <img src="images/icon/icon_6.svg" alt />
                   <span>My Events</span>
                 </a></li>
-                <li className="plr"><a href="add-property.html" className="d-flex w-100 align-items-center active">
+                <li className="plr"><a href="/create-event" className="d-flex w-100 align-items-center active">
                   <img src="images/icon/icon_7_active.svg" alt />
                   <span>Add New Events</span>
                 </a></li>
@@ -152,70 +152,15 @@ const CreateEvent = () => {
                 <form action="#" className="search-form ms-auto">
                   <input type="text" placeholder="Search here.." />
                 </form>
-                <div className="profile-notification position-relative dropdown-center ms-3 ms-md-5 me-4">
-                  <button className="noti-btn dropdown-toggle" type="button" id="notification-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                    <div className="badge-pill" />
-                  </button>
-                  <ul className="dropdown-menu" aria-labelledby="notification-dropdown">
-                    <li>
-                      <h4>Notification</h4>
-                      <ul className="style-none notify-list">
-                        <li className="d-flex align-items-center unread">
-                          <img src="../images/lazy.svg" data-src="images/icon/icon_36.svg" alt className="lazy-img icon" />
-                          <div className="flex-fill ps-2">
-                            <h6>You have 3 new mails</h6>
-                            <span className="time">3 hours ago</span>
-                          </div>
-                        </li>
-                        <li className="d-flex align-items-center">
-                          <img src="../images/lazy.svg" data-src="images/icon/icon_37.svg" alt className="lazy-img icon" />
-                          <div className="flex-fill ps-2">
-                            <h6>Your listing post has been approved</h6>
-                            <span className="time">1 day ago</span>
-                          </div>
-                        </li>
-                        <li className="d-flex align-items-center unread">
-                          <img src="../images/lazy.svg" data-src="images/icon/icon_38.svg" alt className="lazy-img icon" />
-                          <div className="flex-fill ps-2">
-                            <h6>Your meeting is cancelled</h6>
-                            <span className="time">3 days ago</span>
-                          </div>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
-                <div className="d-none d-md-block me-3">
+                <div className="d-none d-md-block me-3 ms-3">
                   <a href="add-property.html" className="btn-two"><span>Add Listing</span> <i className="fa-thin fa-arrow-up-right" /></a>
                 </div>
-                <div className="user-data position-relative">
-                  <button className="user-avatar online position-relative rounded-circle dropdown-toggle" type="button" id="profile-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                    <img src="../images/lazy.svg" data-src="images/avatar_01.jpg" alt className="lazy-img" />
-                  </button>
-                  {/* /.user-avatar */}
-                  <div className="user-name-data">
-                    <ul className="dropdown-menu" aria-labelledby="profile-dropdown">
-                      <li>
-                        <a className="dropdown-item d-flex align-items-center" href="profile.html"><img src="../images/lazy.svg" data-src="images/icon/icon_23.svg" alt className="lazy-img" /><span className="ms-2 ps-1">Profile</span></a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item d-flex align-items-center" href="account-settings.html"><img src="../images/lazy.svg" data-src="images/icon/icon_24.svg" alt className="lazy-img" /><span className="ms-2 ps-1">Account Settings</span></a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal"><img src="../images/lazy.svg" data-src="images/icon/icon_25.svg" alt className="lazy-img" /><span className="ms-2 ps-1">Delete Account</span></a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                {/* /.user-data */}
               </div>
             </header>
             {/* End Header */}
             <h2 className="main-title d-block d-lg-none">Add New Property</h2>
             <div className="bg-white card-box border-20">
               <h4 className="dash-title-three">Overview</h4>
-
-
               <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="dash-input-wrapper mb-30">
                   <label htmlFor>Event Title*</label>
