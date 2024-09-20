@@ -10,7 +10,7 @@ router.post('/create', authMiddleware, upload.single('image'), createEvent);
 
 router.get('/', async (req, res) => {
     try {
-      const events = await Event.find(); // Fetch all events
+      const events = await Event.find(); 
       res.status(200).json(events);
       console.log('Event Model:', Event);
     } catch (error) {
